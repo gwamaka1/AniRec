@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"c:/Users/mwamt/New folder \\(9\\)/\")",
+      "Bash(npm create vite@latest . -- --template react)",
+      "Bash(npm init -y)",
+      "Bash(npm install react react-dom @hello-pangea/dnd)",
+      "Bash(npm install -D vite @vitejs/plugin-react tailwindcss@3 postcss autoprefixer)",
+      "Bash(npx tailwindcss init -p)",
+      "Bash(npx vite build)",
+      "Bash(npx vite --host)",
+      "Bash(npm install @supabase/supabase-js)"
+    ]
+  }
+}
