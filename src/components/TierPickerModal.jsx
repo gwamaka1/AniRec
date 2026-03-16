@@ -79,7 +79,7 @@ export default function TierPickerModal({ anime, onConfirm, onCancel }) {
         ) : (
           <div className="animate-fade-in">
             <p className="text-xs text-gray-400 mb-1.5">
-              Adding to <span className="font-bold text-white">{selectedTier}</span> tier — what did you think? <span className="text-gray-600">(optional)</span>
+              Adding to <span className="font-bold text-white">{selectedTier}</span> tier — what did you think? <span className="text-accent-cyan">(highly recommended for accurate results)</span>
             </p>
             <textarea
               ref={noteRef}
