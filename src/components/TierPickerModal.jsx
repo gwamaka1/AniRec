@@ -15,6 +15,14 @@ export default function TierPickerModal({ anime, onConfirm, onCancel }) {
   const [noteText, setNoteText] = useState('')
   const noteRef = useRef(null)
 
+  // Reset state when a new anime is selected
+  useEffect(() => {
+    if (anime) {
+      setSelectedTier(null)
+      setNoteText('')
+    }
+  }, [anime])
+
   useEffect(() => {
     if (selectedTier && noteRef.current) noteRef.current.focus()
   }, [selectedTier])
