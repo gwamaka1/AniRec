@@ -13,7 +13,6 @@ const TIER_COLORS = {
 export default function TierPickerModal({ anime, onConfirm, onCancel }) {
   const [selectedTier, setSelectedTier] = useState(null)
   const [noteText, setNoteText] = useState('')
-  const [showNote, setShowNote] = useState(false)
   const noteRef = useRef(null)
 
   // Reset state when a new anime is selected
@@ -21,13 +20,12 @@ export default function TierPickerModal({ anime, onConfirm, onCancel }) {
     if (anime) {
       setSelectedTier(null)
       setNoteText('')
-      setShowNote(false)
     }
   }, [anime])
 
   useEffect(() => {
-    if (showNote && noteRef.current) noteRef.current.focus()
-  }, [showNote])
+    if (selectedTier && noteRef.current) noteRef.current.focus()
+  }, [selectedTier])
 
   if (!anime) return null
 
@@ -80,65 +78,45 @@ export default function TierPickerModal({ anime, onConfirm, onCancel }) {
           </div>
         ) : (
           <div className="animate-fade-in">
-            <div className="flex items-center justify-between mb-2">
-              <button
-                onClick={() => { setSelectedTier(null); setNoteText(''); setShowNote(false) }}
-                className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
-              >
-                &larr; Back
-              </button>
-              <span className="text-xs text-gray-400">
-                Adding to <span className="font-bold text-white">{selectedTier}</span> tier
-              </span>
-            </div>
-
-            {!showNote ? (
-              <div className="flex flex-col gap-2">
+            <p className="text-xs text-gray-400 mb-1.5">
+              Adding to <span className="font-bold text-white">{selectedTier}</span> tier — what did you think? <span className="text-gray-600">(optional)</span>
+            </p>
+            <textarea
+              ref={noteRef}
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleConfirm() }
+                if (e.key === 'Escape') onCancel()
+              }}
+              placeholder="e.g. amazing fights, weak ending, loved the characters..."
+              className="w-full bg-dark-800 border border-dark-500 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-accent-cyan resize-none mb-2"
+              rows={2}
+              maxLength={200}
+            />
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] text-gray-600">{noteText.length}/200</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setSelectedTier(null); setNoteText('') }}
+                  className="text-xs px-2 py-1 text-gray-500 hover:text-gray-300 transition-colors"
+                >
+                  Back
+                </button>
                 <button
                   onClick={handleSkip}
-                  className="w-full py-2.5 rounded-lg bg-gradient-to-r from-accent-purple to-accent-cyan text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+                  className="text-xs px-3 py-1 rounded-lg bg-dark-600 hover:bg-dark-500 text-gray-400 transition-colors"
+                >
+                  Skip
+                </button>
+                <button
+                  onClick={handleConfirm}
+                  className="text-xs px-3 py-1 rounded-lg bg-accent-cyan/20 text-accent-cyan hover:bg-accent-cyan/30 font-medium transition-colors"
                 >
                   Add to {selectedTier}
                 </button>
-                <button
-                  onClick={() => setShowNote(true)}
-                  className="w-full py-2 rounded-lg border border-dark-400 hover:border-accent-cyan/50 text-gray-400 hover:text-accent-cyan text-xs transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  Add a note (helps recommendations)
-                </button>
               </div>
-            ) : (
-              <div className="animate-fade-in">
-                <p className="text-xs text-gray-400 mb-1.5">
-                  What did you think? <span className="text-gray-600">(helps your anime guru give better recs)</span>
-                </p>
-                <textarea
-                  ref={noteRef}
-                  value={noteText}
-                  onChange={(e) => setNoteText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleConfirm() }
-                    if (e.key === 'Escape') onCancel()
-                  }}
-                  placeholder="e.g. amazing fights, weak ending, loved the characters..."
-                  className="w-full bg-dark-800 border border-dark-500 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-accent-cyan resize-none mb-2"
-                  rows={2}
-                  maxLength={200}
-                />
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] text-gray-600">{noteText.length}/200</span>
-                  <button
-                    onClick={handleConfirm}
-                    className="text-xs px-4 py-1.5 rounded-lg bg-gradient-to-r from-accent-purple to-accent-cyan text-white font-semibold hover:opacity-90 transition-opacity"
-                  >
-                    Add to {selectedTier}
-                  </button>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         )}
       </div>
