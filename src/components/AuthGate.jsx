@@ -24,10 +24,6 @@ export default function AuthGate({ onAuth }) {
       const { error } = await supabase.auth.signUp({ email, password })
       if (error) {
         setError(error.message)
-      } else {
-        setError(null)
-        setIsSignUp(false)
-        alert('Check your email to confirm your account, then sign in!')
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
