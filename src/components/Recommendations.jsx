@@ -16,6 +16,19 @@ export default function Recommendations({
   const [error, setError] = useState(null)
   const [pastRecs, setPastRecs] = useState([])
   const [eraFilter, setEraFilter] = useState('any')
+  const [genreFilter, setGenreFilter] = useState([])
+
+  const GENRES = [
+    'Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror',
+    'Isekai', 'Mecha', 'Music', 'Mystery', 'Psychological', 'Romance',
+    'Sci-Fi', 'Slice of Life', 'Sports', 'Supernatural', 'Thriller',
+  ]
+
+  const toggleGenre = (genre) => {
+    setGenreFilter((prev) =>
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+    )
+  }
 
   const totalAnime = animeList.length
   const canGenerate = totalAnime >= 3
@@ -45,7 +58,7 @@ export default function Recommendations({
     setRecommendations(null)
     try {
       const wlTitles = [...(watchlistTitles || [])].map((t) => t)
-      const result = await getRecommendations(animeList, allAnime, pastRecs, wlTitles, eraFilter)
+      const result = await getRecommendations(animeList, allAnime, pastRecs, wlTitles, eraFilter, genreFilter)
       setRecommendations(result)
       const newTitles = result.recommendations?.map((r) => r.title) || []
       setPastRecs((prev) => [...new Set([...prev, ...newTitles])])
@@ -117,6 +130,33 @@ export default function Recommendations({
             <option value="2000">2000+</option>
             <option value="classic">Classics (pre-2000)</option>
           </select>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <label className="text-xs text-gray-500 mb-2 block">Genres {genreFilter.length > 0 && <span className="text-accent-cyan">({genreFilter.length} selected)</span>}:</label>
+        <div className="flex flex-wrap gap-1.5">
+          {GENRES.map((genre) => (
+            <button
+              key={genre}
+              onClick={() => toggleGenre(genre)}
+              className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${
+                genreFilter.includes(genre)
+                  ? 'border-accent-cyan bg-accent-cyan/15 text-accent-cyan'
+                  : 'border-dark-500 text-gray-500 hover:text-gray-300 hover:border-dark-400'
+              }`}
+            >
+              {genre}
+            </button>
+          ))}
+          {genreFilter.length > 0 && (
+            <button
+              onClick={() => setGenreFilter([])}
+              className="text-xs px-2.5 py-1 rounded-lg text-gray-600 hover:text-gray-400 transition-colors"
+            >
+              Clear all
+            </button>
+          )}
         </div>
       </div>
 

@@ -7,7 +7,7 @@ const ERA_LABELS = {
   classic: 'ONLY recommend classic anime that aired before the year 2000.',
 }
 
-export async function getRecommendations(rankedAnimeList, allAnime, previouslyRecommended = [], watchlistTitles = [], eraFilter = 'any') {
+export async function getRecommendations(rankedAnimeList, allAnime, previouslyRecommended = [], watchlistTitles = [], eraFilter = 'any', genreFilter = []) {
   const tierGroups = {}
   for (const anime of rankedAnimeList) {
     const tier = anime.tier || '?'
@@ -32,6 +32,9 @@ export async function getRecommendations(rankedAnimeList, allAnime, previouslyRe
     : ''
 
   const eraText = ERA_LABELS[eraFilter] || ''
+  const genreText = genreFilter.length > 0
+    ? `ONLY recommend anime that fit these genres: ${genreFilter.join(', ')}. Every recommendation MUST belong to at least one of these genres.`
+    : ''
 
   let response
   try {
@@ -60,7 +63,7 @@ RULES:
       messages: [
         {
           role: 'user',
-          content: `Here is my anime tier list:\n\n${tierText}${exclusionText}${prevRecText}\n\nRecommend anime I'd enjoy that I haven't seen yet.${eraText ? ' ' + eraText : ''}\n\nRemember: output ONLY valid JSON starting with { and ending with }. No thinking, no preamble, no markdown.`,
+          content: `Here is my anime tier list:\n\n${tierText}${exclusionText}${prevRecText}\n\nRecommend anime I'd enjoy that I haven't seen yet.${eraText ? ' ' + eraText : ''}${genreText ? ' ' + genreText : ''}\n\nRemember: output ONLY valid JSON starting with { and ending with }. No thinking, no preamble, no markdown.`,
         },
       ],
     }),
